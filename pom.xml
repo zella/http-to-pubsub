@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Copyright 2020 Google LLC
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<!-- [START functions_scala_pom] -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.zella.cloud.functions</groupId>
+  <artifactId>http-to-pubsub</artifactId>
+  <version>0.1-SNAPSHOT</version>
+  <!-- [START functions_scala_pom] -->
+  <properties>
+    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.source>11</maven.compiler.source>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <!-- Required for scala samples -->
+    <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-library</artifactId>
+      <version>2.13.3</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.15</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.7</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/com.google.cloud/google-cloud-pubsub -->
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-pubsub</artifactId>
+      <version>1.108.1</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/io.circe/circe-generic -->
+    <dependency>
+      <groupId>io.circe</groupId>
+      <artifactId>circe-generic_2.13</artifactId>
+      <version>0.13.0</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/io.circe/circe-parser -->
+    <dependency>
+      <groupId>io.circe</groupId>
+      <artifactId>circe-parser_2.13</artifactId>
+      <version>0.13.0</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.typelevel/cats-effect -->
+    <dependency>
+      <groupId>org.typelevel</groupId>
+      <artifactId>cats-effect_2.13</artifactId>
+      <version>2.2.0</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/co.fs2/fs2-core -->
+    <dependency>
+      <groupId>co.fs2</groupId>
+      <artifactId>fs2-core_2.13</artifactId>
+      <version>2.4.4</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/co.fs2/fs2-io -->
+    <dependency>
+      <groupId>co.fs2</groupId>
+      <artifactId>fs2-io_2.13</artifactId>
+      <version>2.4.4</version>
+    </dependency>
+    <!-- Required for Function primitives -->
+    <dependency>
+      <groupId>com.google.cloud.functions</groupId>
+      <artifactId>functions-framework-api</artifactId>
+      <version>1.0.2</version>
+      <scope>provided</scope>
+    </dependency>
+    <!-- [END functions_scala_pom] -->
+    <!-- The following dependencies are only required for testing -->
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>3.5.9</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.truth</groupId>
+      <artifactId>truth</artifactId>
+      <version>1.0.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava-testlib</artifactId>
+      <version>29.0-jre</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- [START functions_scala_pom] -->
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <!--
+          Google Cloud Functions Framework Maven plugin
+
+          This plugin allows you to run Cloud Functions Java code
+          locally. Use the following terminal command to run a
+          given function locally:
+
+          mvn function:run -Drun.functionTarget=your.package.yourFunction
+        -->
+        <groupId>com.google.cloud.functions</groupId>
+        <artifactId>function-maven-plugin</artifactId>
+        <version>0.9.4</version>
+        <configuration>
+          <functionTarget>org.zella.topubsub.functions.ProxyFunction</functionTarget>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>net.alchim31.maven</groupId>
+        <artifactId>scala-maven-plugin</artifactId>
+        <version>4.4.0</version>
+        <executions>
+          <execution>
+            <id>scala-compile</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>add-source</goal>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- [END functions_scala_pom] -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.0.0-M5</version>
+        <configuration>
+          <skipTests>${skipTests}</skipTests>
+          <reportNameSuffix>sponge_log</reportNameSuffix>
+          <trimStackTrace>false</trimStackTrace>
+        </configuration>
+      </plugin>
+      <!-- [START functions_scala_pom] -->
+    </plugins>
+  </build>
+</project>
+<!-- [END functions_scala_pom] -->
